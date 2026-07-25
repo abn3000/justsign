@@ -1,3 +1,8 @@
+JustSign!
+
+
+Demo URL: https://abn3000.github.io/justsign/
+
 Inspiration
 We wanted to surprise our friend who recently lost his hearing by speaking to him in ASL. To make the learning process more engaging, we wanted to make a rhythm game that uses ASL signs instead of traditional button presses. This makes it easy to hop in and quickly practice your signs.
 
