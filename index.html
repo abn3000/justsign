@@ -11,6 +11,7 @@
     --cyan:#00f0ff; --pink:#ff2e9a; --yellow:#ffe74c; --purple:#a855f7; --green:#39ff88; --red:#ff3860;
     --text:#eef2ff; --text2:#8b93b8;
   }
+  
   *{box-sizing:border-box;}
   ::selection{background:var(--pink);color:#000;}
   ::-webkit-scrollbar{width:10px;height:10px;}
@@ -33,7 +34,7 @@
   h1,h2,.disp{font-family:'Space Grotesk',sans-serif;}
   .wrap{max-width:1180px;margin:0 auto;padding:22px 20px 40px;position:relative;z-index:1;}
 
-  /* HEADER */
+  /* Header */
   .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;
     padding:12px 18px;border-radius:16px;background:rgba(15,21,36,0.55);border:1.5px solid var(--border);
     backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);}
@@ -53,7 +54,7 @@
   .pill:active{transform:translateY(0);}
   .pill.active{border-color:var(--pink);box-shadow:0 0 14px -2px var(--pink);}
 
-  /* GAME STAGE */
+  /* Game Background */
   .stage{position:relative;border-radius:20px;overflow:hidden;background:#000;
     border:1.5px solid var(--border2);box-shadow:0 0 70px -18px rgba(0,240,255,0.3),0 0 120px -40px rgba(168,85,247,0.35);
     animation:stageGlow 5s ease-in-out infinite;}
@@ -66,7 +67,7 @@
   video{transform:scaleX(-1);}
   canvas.overlay{transform:scaleX(-1);}
 
-  /* HUD sits above everything as a solid bar so the lane never covers the score/word */
+  /* Moving HUD to make the placement look nicer */
   .hud{position:absolute;top:0;left:0;right:0;height:60px;z-index:10;display:flex;justify-content:space-between;align-items:center;
     padding:10px 16px;background:linear-gradient(180deg, rgba(5,7,16,0.92) 0%, rgba(5,7,16,0.78) 75%, transparent 100%);
     border-bottom:1px solid rgba(255,255,255,0.06);}
@@ -76,7 +77,7 @@
   .hud .combo{font-size:13px;color:var(--pink);font-weight:700;}
   .hud .word{font-size:13px;color:var(--text2);letter-spacing:2px;}
 
-  /* lane — starts below the HUD bar so incoming letters never overlap the word/score display */
+  /* Letter Lane (letters slide across it) */
   .lane{position:absolute;left:0;right:0;top:68px;height:96px;pointer-events:none;z-index:2;}
   .track{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);height:2px;
     background:linear-gradient(90deg, transparent, var(--border2) 15%, var(--border2) 100%);}
@@ -150,7 +151,7 @@
   .lg-bar{flex:1;height:6px;background:var(--panel2);border-radius:3px;overflow:hidden;}
   .lg-bar>div{height:100%;background:linear-gradient(90deg,var(--cyan),var(--purple));transition:width .3s;}
 
-  /* TRAIN MODAL - separate window feel */
+  /* Training Window2 */
   .modalbackdrop{position:fixed;inset:0;background:rgba(3,5,12,0.85);backdrop-filter:blur(8px);
     display:none;align-items:center;justify-content:center;z-index:50;padding:20px;}
   .modalbackdrop.show{display:flex;animation:fadeIn .2s ease;}
@@ -295,6 +296,7 @@
   </div>
 </div>
 
+// Bringing in the stuff from MediaPIpe
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/hands.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3.1675466862/camera_utils.js" crossorigin="anonymous"></script>
 <script>
@@ -316,7 +318,7 @@ const WORDS = [
 
 let dataset = {}; LETTERS.forEach(l=>dataset[l]=[]);
 
-/* ================= FEATURE EXTRACTION + KNN (shared) ================= */
+/* KNN Math Model */
 const FINGER_JOINTS = { thumb:[1,2,3,4], index:[5,6,7,8], middle:[9,10,11,12], ring:[13,14,15,16], pinky:[17,18,19,20] };
 const FINGERTIPS = [4,8,12,16,20];
 function vec3(a,b){return {x:b.x-a.x,y:b.y-a.y,z:b.z-a.z};}
@@ -373,7 +375,7 @@ function drawHand(ctx,canvas,video,lm){
   lm.forEach(p=>{ctx.beginPath();ctx.arc(p.x*canvas.width,p.y*canvas.height,4,0,Math.PI*2);ctx.fill();});
 }
 
-/* ================= PERSISTENCE ================= */
+/* Retry Settings */
 async function saveData(){ try{ if(window.storage) await window.storage.set('asl_dataset_v1', JSON.stringify(dataset), false);}catch(e){} }
 async function loadData(){
   try{
@@ -391,7 +393,7 @@ async function loadData(){
   document.getElementById('loadMsg').textContent = 'No saved training data yet — capture some samples.';
 }
 
-/* ================= TRAIN MODAL ================= */
+/* Manual Training */
 const letterSelect=document.getElementById('letterSelect');
 const letterGrid=document.getElementById('letterGrid');
 let selectedLetter='A';
@@ -470,7 +472,7 @@ document.getElementById('openTrainBtn').onclick=()=>trainModal.classList.add('sh
 document.getElementById('closeTrainBtn').onclick=()=>trainModal.classList.remove('show');
 trainModal.addEventListener('click',e=>{ if(e.target===trainModal) trainModal.classList.remove('show'); });
 
-/* ================= GAME ================= */
+/* Signing Game */
 let gvideo=document.getElementById('gvideo'), goverlay=document.getElementById('goverlay'), gctx=goverlay.getContext('2d');
 let gameLatestLM=null, gameCamera=null, gameCamStarted=false;
 const gameHands = new Hands({locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/${f}`});
@@ -574,7 +576,7 @@ function gameLoop(now){
     const totalTravel = letterDelay + 900; // ms to go from spawn(right) to hitzone
     const timeToHit = item.spawnTime - now; // ms remaining until it's "due"
     // position: interpolate from laneWidth-40 (right, far future) to hzCenter (at due time)
-    const progress = 1 - (timeToHit / totalTravel); // 0 at spawn, 1 at due
+    const progress = 1 - (timeToHit / totalTravel); // goes from 0 to 1 from spawn to "due"
     const clamped = Math.max(-0.15, Math.min(1.25, progress));
     const x = (laneWidth-40) - clamped*((laneWidth-40)-hzCenter);
     item.el.style.left = x+'px';
