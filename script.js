@@ -76,10 +76,10 @@ function drawHand(ctx,canvas,video,lm){
 /* Baked-in team dataset — one file per teammate, merged together at load time.
    Add or rename entries here to match whatever files land in /training-data/. */
 const DEFAULT_DATASET_FILES = [
-  'training-data/teammate1.json',
-  'training-data/teammate2.json',
-  'training-data/teammate3.json',
-  'training-data/teammate4.json'
+  'teammate1.json',
+  'teammate2.json',
+  'teammate3.json',
+  'teammate4.json'
 ];
 
 let bakedDataset = {}; LETTERS.forEach(l=>bakedDataset[l]=[]);   // from /training-data/*.json
