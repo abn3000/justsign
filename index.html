@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>JustSign! — ASL Rhythm Game</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div>
+      <div class="logo"><span class="dot"></span>JUST<span>SIGN!</span></div>
+      <div class="tagline">ASL fingerspelling · rhythm trainer</div>
+    </div>
+    <div class="topbtns">
+      <button class="pill" id="startCamBtn">Start camera</button>
+      <button class="pill" id="openTrainBtn">Train signs</button>
+    </div>
+  </div>
+
+  <div class="stage">
+    <div class="stagegrid">
+      <div class="camwrap">
+        <video id="gvideo" playsinline muted></video>
+        <canvas id="goverlay" class="overlay"></canvas>
+
+        <div class="hud">
+          <div class="stat"><div class="score" id="scoreVal">0</div><div class="word" id="wordVal">–</div></div>
+          <div class="stat" style="text-align:right;display:flex;align-items:center;gap:10px;">
+            <div class="combo" id="comboVal">0x combo</div>
+            <button class="pill" id="stopBtn" style="padding:6px 14px;font-size:12px;">Stop</button>
+          </div>
+        </div>
+
+        <div class="lane" id="lane">
+          <div class="track"></div>
+          <div class="hitzone" id="hitzone"><span id="hzLetter" class="hz-glyph"></span>
+            <span class="hz-label">SIGN HERE</span>
+          </div>
+        </div>
+
+        <div class="centermsg" id="centerMsg">
+          <h2>Ready to sign?</h2>
+          <p>Start your camera, hop into training if you need to add more signs, then hit play. Words scroll in letter by letter — hold each sign as it lands in the ring.</p>
+          <button class="bigbtn" id="playBtn" disabled>Start camera first</button>
+        </div>
+      </div>
+
+      <div class="sidepanel">
+        <h3>Current word</h3>
+        <div class="wordline" id="wordLine"></div>
+
+        <h3>Live read</h3>
+        <div class="statrow"><span>Detected as</span><b id="detectedLetter">—</b></div>
+        <div class="statrow"><span>Confidence</span><b id="detectedConf">–</b></div>
+
+        <h3>Session</h3>
+        <div class="statrow"><span>Score</span><b id="sideScore">0</b></div>
+        <div class="statrow"><span>Best combo</span><b id="sideBestCombo">0</b></div>
+        <div class="statrow"><span>Hit accuracy</span><b id="sideAcc">–</b></div>
+        <div class="statrow"><span>Words cleared</span><b id="sideWords">0</b></div>
+
+        <div class="streakbar">
+          <h3 style="margin-bottom:0;">Combo heat</h3>
+          <div class="sb-track"><div class="sb-fill" id="sbFill"></div></div>
+        </div>
+
+        <div class="difficulty">
+          <button data-d="5000">Rookie</button>
+          <button class="sel" data-d="4000">Casual</button>
+          <button data-d="3000">Normal</button>
+          <button data-d="2000">Hard</button>
+          <button data-d="1000">Expert</button>
+        </div>
+        <div class="difficulty-note">Each level shaves a full second off letter travel time.</div>
+
+        <div class="lettergraph" id="letterGraphWrap">
+          <h3>Your trained letters</h3>
+          <div id="letterGraph"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TRAIN MODAL -->
+<div class="modalbackdrop" id="trainModal">
+  <div class="trainwin">
+    <div class="trainhead">
+      <h2>Sign training lab</h2>
+      <button class="closex" id="closeTrainBtn">✕</button>
+    </div>
+    <div class="traingrid">
+      <div>
+        <div class="trainvid">
+          <video id="tvideo" playsinline muted></video>
+          <canvas id="toverlay"></canvas>
+        </div>
+        <div class="row" style="margin-top:10px;">
+          <button class="ctl" id="trainCamBtn">Start training camera</button>
+        </div>
+      </div>
+      <div>
+        <div class="row">
+          <select id="letterSelect"></select>
+          <button class="ctl primary" id="captureBtn" disabled>Capture sample</button>
+          <button class="ctl" id="burstBtn" disabled>Burst ×20</button>
+        </div>
+        <div class="trainstatus" id="captureStatus">Start the training camera, hold a hand sign steady, then capture.</div>
+        <div class="lettersgrid" id="letterGrid"></div>
+        <div class="row" style="margin-top:14px;">
+          <button class="ctl danger" id="clearLetterBtn">Clear selected letter</button>
+          <button class="ctl danger" id="clearAllBtn">Clear all data</button>
+          <button class="ctl primary" id="exportBtn">Export training data</button>
+        </div>
+        <div class="trainstatus" id="loadMsg" style="margin-top:10px;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/hands.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3.1675466862/camera_utils.js" crossorigin="anonymous"></script>
+<script src="script.js"></script>
+</body>
+</html>
