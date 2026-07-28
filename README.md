@@ -4,7 +4,7 @@
 ## Try it!
 Demo URL: https://abn3000.github.io/justsign/
 
-Note: Training has already been done ahead of time, so you can start playing immediately!
+Note: Training has already been done ahead of time, so you can start playing immediately!  
 
 
 ## Inspiration  
