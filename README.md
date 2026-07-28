@@ -1,5 +1,5 @@
 # JustSign!
-<img width="1148" height="718" alt="image" src="https://github.com/user-attachments/assets/f32bc15d-3645-40c1-bde0-c1fdc4d0f4d8" />
+<img width="1100" height="700" alt="image" src="https://github.com/user-attachments/assets/f32bc15d-3645-40c1-bde0-c1fdc4d0f4d8" />
 
 ## Try it!
 Demo URL: https://abn3000.github.io/justsign/
